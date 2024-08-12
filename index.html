@@ -50,7 +50,7 @@
             transition: background-color 0.3s ease;
         }
         .channel-button img {
-            width: 30px; /* Adjust the icon size */
+            width: 30px;
             height: auto;
             margin-right: 10px;
         }
@@ -248,24 +248,27 @@
         <video id="live-video" class="plyr" controls></video>
     </div>
 
-    <!-- Include Plyr and HLS.js -->
+   <!-- Include Plyr and HLS.js -->
     <script src="https://cdn.jsdelivr.net/npm/plyr@3.7.7/dist/plyr.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script>
         const player = new Plyr('#live-video');
+        const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
         const buttons = document.querySelectorAll('.channel-button');
         buttons.forEach(button => {
             button.addEventListener('click', () => {
-                const src = button.getAttribute('data-src');
+                const targetUrl = button.getAttribute('data-src');
+                const finalUrl = proxyUrl + targetUrl;
+                
                 if (Hls.isSupported()) {
                     const hls = new Hls();
-                    hls.loadSource(src);
+                    hls.loadSource(finalUrl);
                     hls.attachMedia(player.media);
                     hls.on(Hls.Events.MANIFEST_PARSED, () => {
                         player.play();
                     });
                 } else if (player.media.canPlayType('application/vnd.apple.mpegurl')) {
-                    player.media.src = src;
+                    player.media.src = finalUrl;
                     player.media.addEventListener('loadedmetadata', () => {
                         player.play();
                     });
