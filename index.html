@@ -253,22 +253,19 @@
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script>
         const player = new Plyr('#live-video');
-        const proxyUrl = 'http://d.waynesg.cc:9999/';
         const buttons = document.querySelectorAll('.channel-button');
         buttons.forEach(button => {
             button.addEventListener('click', () => {
-                const targetUrl = button.getAttribute('data-src');
-                const finalUrl = proxyUrl + targetUrl;
-                
+                const src = button.getAttribute('data-src');
                 if (Hls.isSupported()) {
                     const hls = new Hls();
-                    hls.loadSource(finalUrl);
+                    hls.loadSource(src);
                     hls.attachMedia(player.media);
                     hls.on(Hls.Events.MANIFEST_PARSED, () => {
                         player.play();
                     });
                 } else if (player.media.canPlayType('application/vnd.apple.mpegurl')) {
-                    player.media.src = finalUrl;
+                    player.media.src = src;
                     player.media.addEventListener('loadedmetadata', () => {
                         player.play();
                     });
